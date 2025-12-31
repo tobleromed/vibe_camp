@@ -1,0 +1,19 @@
+body {
+  font-family: system-ui, sans-serif;
+  background: #fff;
+  color: #200;
+  padding: 40px;
+}
+
+h1 {
+  font-size: 36px;
+}
+
+p {
+  font-size: 24px;
+}
+
+a {
+  color: #26e;
+  font-weight: 600;
+}
