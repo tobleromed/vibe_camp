@@ -1,8 +1,9 @@
 body {
-  font-family: system-ui, sans-serif;
+  font-family: sans-serif;
   background: #fff;
   color: #200;
   padding: 40px;
+  text-align: center;
 }
 
 h1 {
