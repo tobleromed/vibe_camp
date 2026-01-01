@@ -14,7 +14,9 @@
     <p>This is a real webpage. hafha sidfh asud hfiua sdiufhaisudf haishd fuia sdiuf aisud fhiuas dfiua sdfiua siudfh aiusd hfiuas dhfiuasdiuf asiudf hiausd hfuiasdfiu asdiuf haiusd hfiuashdfiuahsdiuf hauisdh fiuasd fiua sdiufh aiusdh fiuas dfiuahdsiufh sduifh iusdh iusd hf</p>
 	<p>
       <label for="picture">Take a picture using back facing camera:</label>
-      <input type="file" id="cam_photo" name="picture" accept="image/*" capture="environment">
+      <input id="photo_input" type="file" accept="image/*" capture="environment">
+      <img id="thumbnail" width="200">
+
 	</p>
     <p>
       Visit <a href="https://www.wikipedia.org">Wikipedia</a>
@@ -22,14 +24,14 @@
     <img src="https://picsum.photos/id/237/500/500"/>
 
   <script>
-  f.onchange = () => {
+  photo_input.onchange = () => {
     const img = new Image()
     img.onload = () => {
       const c = Object.assign(document.createElement("canvas"), {width: img.width, height: img.height})
       c.getContext("2d").drawImage(img, 0, 0)
-      c.toBlob(b => cam_photo.src = URL.createObjectURL(b), "image/jpeg")
+      c.toBlob(b => thumbnail.src = URL.createObjectURL(b), "image/jpeg")
     }
-    img.src = URL.createObjectURL(f.files[0])
+    img.src = URL.createObjectURL(photo_input.files[0])
   }
   </script>
 
