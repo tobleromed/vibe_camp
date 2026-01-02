@@ -9,7 +9,7 @@ from openai import OpenAI
 # Hardcode the local image path here:
 IMAGE_PATH = "IMG_0290.jpeg"
 
-MODEL = "gpt-4o-mini"
+MODEL = "gpt-4o"
 
 
 @dataclass
