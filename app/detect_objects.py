@@ -6,9 +6,6 @@ from typing import Any, Dict, List
 
 from openai import OpenAI
 
-# Hardcode the local image path here:
-IMAGE_PATH = "IMG_0290.jpeg"
-
 MODEL = "gpt-4o"
 
 
@@ -30,9 +27,8 @@ def make_client() -> OpenAI:
     return OpenAI(api_key=api_key)
 
 
-def jpeg_file_to_data_url(path: str) -> str:
-    with open(path, "rb") as f:
-        b64 = base64.b64encode(f.read()).decode("utf-8")
+def jpeg_bytes_to_data_url(data: bytes) -> str:
+    b64 = base64.b64encode(data).decode("utf-8")
     return f"data:image/jpeg;base64,{b64}"
 
 
@@ -61,7 +57,16 @@ def build_instruction() -> str:
 """.strip()
 
 
-def call_vision_api(client: OpenAI, data_url: str, instruction: str) -> Dict[str, Any]:
+def analyze_jpeg_bytes(jpeg_bytes: bytes) -> Dict[str, Any]:
+    """
+    Core reusable function:
+    input  -> JPEG bytes
+    output -> parsed JSON from OpenAI
+    """
+    client = make_client()
+    data_url = jpeg_bytes_to_data_url(jpeg_bytes)
+    instruction = build_instruction()
+
     resp = client.responses.create(
         model=MODEL,
         input=[
@@ -75,25 +80,43 @@ def call_vision_api(client: OpenAI, data_url: str, instruction: str) -> Dict[str
         ],
         text={"format": {"type": "json_object"}},
     )
+
     return json.loads(resp.output_text)
 
 
-def parse_objects(payload: Dict[str, Any]) -> List[DetectedObject]:
-    objs = []
-    for o in payload.get("objects", []) or []:
+def format_text_output(payload: Dict[str, Any]) -> str:
+    """
+    Produce the same human-readable text that the CLI printed before.
+    """
+    warnings = payload.get("warnings", []) or []
+    objects = payload.get("objects", []) or []
+
+    lines: List[str] = []
+
+    if warnings:
+        lines.append("Warnings:")
+        for w in warnings:
+            lines.append(f"- {w}")
+        lines.append("")
+
+    if not objects:
+        lines.append("No objects returned.")
+        return "\n".join(lines)
+
+    objects = sorted(objects, key=lambda o: float(o.get("confidence", 0.0)), reverse=True)
+    lines.append(f"Detected {len(objects)} objects:")
+
+    for o in objects:
         box = o.get("box") or {}
-        objs.append(
-            DetectedObject(
-                label=str(o.get("label", "unknown")),
-                description=str(o.get("description", "unknown")),
-                confidence=float(o.get("confidence", 0.0) or 0.0),
-                x=float(box.get("x", 0.0) or 0.0),
-                y=float(box.get("y", 0.0) or 0.0),
-                w=float(box.get("w", 0.0) or 0.0),
-                h=float(box.get("h", 0.0) or 0.0),
-            )
+        lines.append(
+            f"- {o.get('label','unknown'):20s}  "
+            f"- {o.get('description','unknown'):50s}  "
+            f"conf={float(o.get('confidence',0.0)):.2f}  "
+            f"box=[x={box.get('x',0):.3f}, y={box.get('y',0):.3f}, "
+            f"w={box.get('w',0):.3f}, h={box.get('h',0):.3f}]"
         )
-    return objs
+
+    return "\n".join(lines)
 
 
 def print_results(objects: List[DetectedObject], warnings: List[str]) -> None:
@@ -117,16 +140,11 @@ def print_results(objects: List[DetectedObject], warnings: List[str]) -> None:
         )
 
 
-def run() -> None:
-    client = make_client()
-    data_url = jpeg_file_to_data_url(IMAGE_PATH)
-    instruction = build_instruction()
-    payload = call_vision_api(client, data_url, instruction)
-
-    warnings = payload.get("warnings", []) or []
-    objects = parse_objects(payload)
-    print_results(objects, warnings)
-
-
+# --- CLI usage ---
 if __name__ == "__main__":
-    run()
+    IMAGE_PATH = "./IMG_0290.jpeg"
+    with open(IMAGE_PATH, "rb") as f:
+        jpeg = f.read()
+
+    payload = analyze_jpeg_bytes(jpeg)
+    print(format_text_output(payload))
