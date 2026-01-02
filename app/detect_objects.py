@@ -38,26 +38,26 @@ def jpeg_file_to_data_url(path: str) -> str:
 
 def build_instruction() -> str:
     return """
-Return ONLY valid JSON (no markdown) with this exact shape:
+  Return ONLY valid JSON (no markdown) with this exact shape:
 
-{
-  "objects": [
-    {
-      "label": "string",
-      "description": "string",
-      "confidence": 0.0,
-      "box": {"x": 0.0, "y": 0.0, "w": 0.0, "h": 0.0}
-    }
-  ],
-  "warnings": ["string"]
-}
+  {
+    "objects": [
+      {
+        "label": "string",
+        "description": "string",
+        "confidence": 0.0,
+        "box": {"x": 0.0, "y": 0.0, "w": 0.0, "h": 0.0}
+      }
+    ],
+    "warnings": ["string"]
+  }
 
-Rules:
-- box coordinates are normalized to [0,1] relative to image width/height.
-- x,y are top-left; w,h are width/height.
-- Include 8–25 objects max.
-- Be specific about each item, to build a detailed inventory of the visible items.
-- If unsure, omit the object or add a warning.
+  Rules:
+  - box coordinates are normalized to [0,1] relative to image width/height.
+  - x,y are top-left; w,h are width/height.
+  - Include 8–25 objects max.
+  - Be specific about each item, to build a detailed inventory of the visible items.
+  - If unsure, omit the object or add a warning.
 """.strip()
 
 
