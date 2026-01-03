@@ -1,17 +1,14 @@
-# webserver.py
-# Minimal Flask server: POST a JPEG file, keep it in memory.
+from flask import Flask, request, Response, jsonify
 
-from flask import Flask, request, jsonify
+from detect_objects import analyze_jpeg_bytes, format_text_output
+
+PORT = 8487
 
 app = Flask(__name__)
 
-LAST_JPEG: bytes | None = None  # in-memory only; overwritten each upload
-
 
 @app.post("/upload")
-def upload():
-    global LAST_JPEG
-
+def upload_and_analyze():
     if "file" not in request.files:
         return jsonify(error="Missing form field 'file'"), 400
 
@@ -22,13 +19,22 @@ def upload():
     if (f.mimetype or "").lower() != "image/jpeg":
         return jsonify(error="Only image/jpeg is accepted", got=f.mimetype), 415
 
-    data = f.read()
-    if not data:
+    jpeg_bytes = f.read()
+    if not jpeg_bytes:
         return jsonify(error="Empty upload"), 400
 
-    LAST_JPEG = data
-    return jsonify(ok=True, bytes=len(data))
+    try:
+        payload = analyze_jpeg_bytes(jpeg_bytes)
+        text = format_text_output(payload)
+        return Response(text, mimetype="text/plain")
+    except Exception as e:
+        return Response(
+            f"ERROR analyzing image:\n{e}",
+            status=500,
+            mimetype="text/plain",
+        )
 
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=8487, debug=True)
+    app.run(host="0.0.0.0", port=PORT, debug=True)
+

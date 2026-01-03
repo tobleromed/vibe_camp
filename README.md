@@ -9,4 +9,9 @@ This project is currently "alpha" and not ready for others to use just yet.
 
 I hope you learn something cool from this!
 
+Usage:
+
+uv run app/detect_objects.py
+
+curl -X POST http://localhost:8487/upload -F "file=@./IMG_0280.jpg;type=image/jpeg"
 
