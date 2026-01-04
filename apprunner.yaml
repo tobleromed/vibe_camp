@@ -18,4 +18,4 @@ run:
       value: "8080"
   secrets:
     - name: OPENAI_API_KEY
-      value-from: "arn:aws:secretsmanager:us-west-2:294574925255:secret:vibecamp-openapi-key-vd5cQU"
+      value-from: "arn:aws:secretsmanager:us-west-2:294574925255:secret:vibecamp-openapi-key-vd5cQU:OPENAI_API_KEY::"
