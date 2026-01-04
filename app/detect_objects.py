@@ -9,10 +9,10 @@ from openai import OpenAI
 # MODEL = "gpt-4o-mini"
 # MODEL = "gpt-4o"
 # MODEL = "gpt-4.1-mini"
-MODEL = "gpt-5-nano"
+# MODEL = "gpt-5-nano"
 # MODEL = "gpt-5"
 # MODEL = "gpt-5-mini"
-# MODEL = "gpt-5.2"
+MODEL = "gpt-5.2"
 # MODEL = "gpt-5-chat-latest"
 # MODEL = "gpt-realtime-mini"
 
@@ -59,8 +59,9 @@ def build_instruction() -> str:
   Rules:
   - box coordinates are normalized to [0,1] relative to image width/height.
   - x,y are top-left; w,h are width/height.
-  - Include 8–25 objects max.
+  - Include 10–30 objects max.
   - Be specific about each item, to build a detailed inventory of the visible items.
+- - Assess the material of each item.
   - If unsure, omit the object or add a warning.
 """.strip()
 
