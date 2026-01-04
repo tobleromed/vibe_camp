@@ -1,10 +1,14 @@
+import os
 from flask import Flask, request, Response, jsonify
+
 
 from detect_objects import analyze_jpeg_bytes, format_text_output
 
 DEFAULT_PORT = 8080
 
-app = Flask(__name__, static_folder="pages", static_url_path="")
+# Use a relative path or an absolute path based on the file's location
+template_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), 'pages'))
+app = Flask(__name__, static_folder=template_dir, static_url_path="")
 
 
 from flask import send_from_directory
@@ -52,7 +56,6 @@ def upload_and_analyze():
 
 
 if __name__ == "__main__":
-    import os
     port = int(os.environ.get("PORT", DEFAULT_PORT))
     app.run(host="0.0.0.0", port=port, debug=False)
 
