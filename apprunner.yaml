@@ -1,0 +1,14 @@
+version: 1.0
+
+runtime: python311
+
+build:
+  commands:
+    build:
+      - python3 -m pip install -U pip
+      - python3 -m pip install -r requirements.txt
+
+run:
+  command: python3 webserver.py
+  network:
+    port: 8080
