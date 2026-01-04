@@ -3,6 +3,10 @@ name = "vision-cli"
 version = "0.1.0"
 requires-python = ">=3.10"
 
+[build-system]
+requires = ["setuptools>=65", "wheel"]
+build-backend = "setuptools.build_meta"
+
 dependencies = [
   "openai",
   "flask"
