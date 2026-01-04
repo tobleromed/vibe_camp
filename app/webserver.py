@@ -2,9 +2,22 @@ from flask import Flask, request, Response, jsonify
 
 from detect_objects import analyze_jpeg_bytes, format_text_output
 
-PORT = 8487
+DEFAULT_PORT = 8080
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder="pages", static_url_path="")
+
+
+from flask import send_from_directory
+
+
+@app.get("/health")
+def health():
+    return "ok", 200
+
+
+@app.get("/")
+def index():
+    return send_from_directory("pages", "index.html")
 
 
 @app.post("/upload")
@@ -35,6 +48,11 @@ def upload_and_analyze():
         )
 
 
+
+
+
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=PORT, debug=True)
+    import os
+    port = int(os.environ.get("PORT", DEFAULT_PORT))
+    app.run(host="0.0.0.0", port=port, debug=False)
 
