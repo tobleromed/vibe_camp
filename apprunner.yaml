@@ -11,3 +11,6 @@ run:
   command: python3 app/webserver.py
   network:
     port: 8080
+  env:
+    - name: PORT
+      value: "8080"
