@@ -6,7 +6,15 @@ from typing import Any, Dict, List
 
 from openai import OpenAI
 
-MODEL = "gpt-4o"
+# MODEL = "gpt-4o-mini"
+# MODEL = "gpt-4o"
+# MODEL = "gpt-4.1-mini"
+MODEL = "gpt-5-nano"
+# MODEL = "gpt-5"
+# MODEL = "gpt-5-mini"
+# MODEL = "gpt-5.2"
+# MODEL = "gpt-5-chat-latest"
+# MODEL = "gpt-realtime-mini"
 
 
 @dataclass
