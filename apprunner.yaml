@@ -5,12 +5,14 @@ build:
   commands:
     build:
       - python3 -m pip install -U pip
-      - python3 -m pip install -r app/requirements.txt
+      - python3 -m pip install -r app/requirements.txt -t python_lib
 
 run:
   command: python3 app/webserver.py
   network:
     port: 8080
   env:
+    - name: PYTHONPATH
+      value: "/app/python_lib"
     - name: PORT
       value: "8080"
