@@ -1,20 +1,20 @@
 import base64
 import json
 import os
+import sys
 from dataclasses import dataclass
 from typing import Any, Dict, List
 
 from openai import OpenAI
 
-# MODEL = "gpt-4o-mini"
+MODEL = "gpt-4o-mini"
 # MODEL = "gpt-4o"
 # MODEL = "gpt-4.1-mini"
 # MODEL = "gpt-5-nano"
 # MODEL = "gpt-5"
 # MODEL = "gpt-5-mini"
-MODEL = "gpt-5.2"
+# MODEL = "gpt-5.2"
 # MODEL = "gpt-5-chat-latest"
-# MODEL = "gpt-realtime-mini"
 
 
 @dataclass
@@ -151,8 +151,11 @@ def print_results(objects: List[DetectedObject], warnings: List[str]) -> None:
 
 # --- CLI usage ---
 if __name__ == "__main__":
-    IMAGE_PATH = "./IMG_0290.jpeg"
-    with open(IMAGE_PATH, "rb") as f:
+    filepath = sys.argv[1]
+    if not os.path.isfile(filepath):
+        print(f"File not found: {filepath}", file=sys.stderr)
+        exit
+    with open(filepath, "rb") as f:
         jpeg = f.read()
 
     payload = analyze_jpeg_bytes(jpeg)
