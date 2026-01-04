@@ -1,18 +1,13 @@
 version: 1.0
-
 runtime: python311
 
 build:
   commands:
     build:
-      - pip3 install pipenv
-      - pipenv install
+      - python3 -m pip install -U pip
+      - python3 -m pip install -r app/requirements.txt
 
 run:
-  runtime-version: 3.11
-  pre-run:  
-    - pip3 install pipenv
-    - pipenv install
-  command: pipenv run python3 app/webserver.py
+  command: python3 app/webserver.py
   network:
     port: 8080
