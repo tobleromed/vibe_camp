@@ -80,7 +80,8 @@ input[type="file"] {
   transition: background-color 0.2s, border-color 0.2s;
 }
 
-.bbox:hover {
+.bbox:hover,
+.bbox.active {
   background-color: rgba(118, 75, 162, 0.5);
   border-color: #764ba2;
 }

@@ -74,6 +74,14 @@
         const displayWidth = img.clientWidth;
         const displayHeight = img.clientHeight;
 
+        // Clear description when tapping outside bounding boxes
+        container.addEventListener("click", (e) => {
+          if (e.target === img || e.target === container) {
+            document.querySelectorAll(".bbox").forEach(b => b.classList.remove("active"));
+            descriptionDiv.textContent = "";
+          }
+        });
+
         objects.forEach(obj => {
           const box = obj.box || {};
           const div = document.createElement("div");
@@ -84,11 +92,21 @@
           div.style.height = (box.h * displayHeight) + "px";
 
           const description = obj.description || obj.label || "Unknown";
+
+          // Mouse events for desktop
           div.addEventListener("mouseenter", () => {
             descriptionDiv.textContent = description;
           });
           div.addEventListener("mouseleave", () => {
             descriptionDiv.textContent = "";
+          });
+
+          // Touch/click events for mobile
+          div.addEventListener("click", (e) => {
+            e.stopPropagation();
+            document.querySelectorAll(".bbox").forEach(b => b.classList.remove("active"));
+            div.classList.add("active");
+            descriptionDiv.textContent = description;
           });
 
           container.appendChild(div);
