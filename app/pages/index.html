@@ -21,6 +21,8 @@
 
       <button id="upload_btn" disabled>Upload + Analyze</button>
 
+      <div id="object-description"></div>
+
       <div id="warnings"></div>
 
       <img class="puppy" src="https://picsum.photos/id/237/300/300" alt="Cute puppy">
@@ -68,6 +70,7 @@
         clearBoundingBoxes();
         const container = document.getElementById("image-container");
         const img = document.getElementById("thumbnail");
+        const descriptionDiv = document.getElementById("object-description");
         const displayWidth = img.clientWidth;
         const displayHeight = img.clientHeight;
 
@@ -80,10 +83,13 @@
           div.style.width = (box.w * displayWidth) + "px";
           div.style.height = (box.h * displayHeight) + "px";
 
-          const tooltip = document.createElement("div");
-          tooltip.className = "bbox-tooltip";
-          tooltip.textContent = obj.description || obj.label || "Unknown";
-          div.appendChild(tooltip);
+          const description = obj.description || obj.label || "Unknown";
+          div.addEventListener("mouseenter", () => {
+            descriptionDiv.textContent = description;
+          });
+          div.addEventListener("mouseleave", () => {
+            descriptionDiv.textContent = "";
+          });
 
           container.appendChild(div);
         });
