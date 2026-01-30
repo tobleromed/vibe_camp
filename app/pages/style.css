@@ -55,14 +55,74 @@ input[type="file"] {
   font-size: 14px;
 }
 
+#image-container {
+  position: relative;
+  display: inline-block;
+  margin: 20px auto 0;
+}
+
 #thumbnail {
   display: block;
-  margin: 20px auto 0;
+  max-width: 100%;
   border-radius: 8px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 #thumbnail:not([src]), #thumbnail[src=""] {
+  display: none;
+}
+
+.bbox {
+  position: absolute;
+  border: 2px solid red;
+  box-sizing: border-box;
+  cursor: pointer;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+.bbox:hover {
+  background-color: rgba(118, 75, 162, 0.7);
+  border-color: #764ba2;
+}
+
+.bbox-tooltip {
+  display: none;
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(118, 75, 162, 0.85);
+  color: white;
+  font-size: 12px;
+  font-weight: 500;
+  padding: 4px 6px;
+  box-sizing: border-box;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.bbox:hover .bbox-tooltip {
+  display: flex;
+}
+
+#warnings {
+  background: #f5f5f5;
+  border-radius: 8px;
+  padding: 20px;
+  margin-top: 20px;
+  text-align: left;
+  font-family: "SF Mono", Monaco, "Courier New", monospace;
+  font-size: 13px;
+  color: #333;
+  white-space: pre-wrap;
+  word-wrap: break-word;
+}
+
+#warnings:empty {
   display: none;
 }
 
@@ -89,23 +149,6 @@ button:disabled {
   cursor: not-allowed;
 }
 
-#result {
-  background: #f5f5f5;
-  border-radius: 8px;
-  padding: 20px;
-  margin-top: 20px;
-  text-align: left;
-  font-family: "SF Mono", Monaco, "Courier New", monospace;
-  font-size: 13px;
-  color: #333;
-  white-space: pre-wrap;
-  word-wrap: break-word;
-  min-height: 0;
-}
-
-#result:empty {
-  display: none;
-}
 
 .puppy {
   display: block;

@@ -14,12 +14,14 @@
       <div class="upload-area">
         <label for="photo_input">Take a photo or choose an image:</label>
         <input id="photo_input" type="file" accept="image/*" capture="environment">
-        <img id="thumbnail" width="200">
+        <div id="image-container">
+          <img id="thumbnail">
+        </div>
       </div>
 
       <button id="upload_btn" disabled>Upload + Analyze</button>
 
-      <pre id="result"></pre>
+      <div id="warnings"></div>
 
       <img class="puppy" src="https://picsum.photos/id/237/300/300" alt="Cute puppy">
 
@@ -30,14 +32,19 @@
 
     <script>
       let jpegBlob = null;
+      let imageWidth = 0;
+      let imageHeight = 0;
 
       photo_input.onchange = () => {
-        result.textContent = "";
+        clearBoundingBoxes();
+        warnings.textContent = "";
         upload_btn.disabled = true;
         jpegBlob = null;
 
         const img = new Image();
         img.onload = () => {
+          imageWidth = img.width;
+          imageHeight = img.height;
           const c = Object.assign(document.createElement("canvas"), {
             width: img.width,
             height: img.height
@@ -53,13 +60,43 @@
         img.src = URL.createObjectURL(photo_input.files[0]);
       };
 
+      function clearBoundingBoxes() {
+        document.querySelectorAll(".bbox").forEach(el => el.remove());
+      }
+
+      function renderBoundingBoxes(objects) {
+        clearBoundingBoxes();
+        const container = document.getElementById("image-container");
+        const img = document.getElementById("thumbnail");
+        const displayWidth = img.clientWidth;
+        const displayHeight = img.clientHeight;
+
+        objects.forEach(obj => {
+          const box = obj.box || {};
+          const div = document.createElement("div");
+          div.className = "bbox";
+          div.style.left = (box.x * displayWidth) + "px";
+          div.style.top = (box.y * displayHeight) + "px";
+          div.style.width = (box.w * displayWidth) + "px";
+          div.style.height = (box.h * displayHeight) + "px";
+
+          const tooltip = document.createElement("div");
+          tooltip.className = "bbox-tooltip";
+          tooltip.textContent = obj.description || obj.label || "Unknown";
+          div.appendChild(tooltip);
+
+          container.appendChild(div);
+        });
+      }
+
       upload_btn.onclick = async () => {
         if (!jpegBlob) {
-          result.textContent = "No JPEG ready yet.";
+          warnings.textContent = "No JPEG ready yet.";
           return;
         }
 
-        result.textContent = "Analyzing...";
+        clearBoundingBoxes();
+        warnings.textContent = "Analyzing...";
 
         const form = new FormData();
         form.append("file", jpegBlob, "photo.jpg");
@@ -70,15 +107,23 @@
             body: form
           });
 
-          const text = await res.text();
+          const data = await res.json();
           if (!res.ok) {
-            result.textContent = "Server error:\n" + text;
+            warnings.textContent = "Server error: " + (data.error || JSON.stringify(data));
             return;
           }
 
-          result.textContent = text;
+          if (data.warnings && data.warnings.length > 0) {
+            warnings.textContent = "Warnings:\n" + data.warnings.map(w => "- " + w).join("\n");
+          } else {
+            warnings.textContent = "";
+          }
+
+          if (data.objects && data.objects.length > 0) {
+            renderBoundingBoxes(data.objects);
+          }
         } catch (e) {
-          result.textContent = "Network error: " + e;
+          warnings.textContent = "Network error: " + e;
         }
       };
     </script>

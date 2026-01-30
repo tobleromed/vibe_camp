@@ -42,14 +42,9 @@ def upload_and_analyze():
 
     try:
         payload = analyze_jpeg_bytes(jpeg_bytes)
-        text = format_text_output(payload)
-        return Response(text, mimetype="text/plain")
+        return jsonify(payload)
     except Exception as e:
-        return Response(
-            f"ERROR analyzing image:\n{e}",
-            status=500,
-            mimetype="text/plain",
-        )
+        return jsonify(error=str(e)), 500
 
 
 
