@@ -1,34 +1,32 @@
 <!DOCTYPE html>
-
 <html>
-
   <head>
-    <title>My First Website v0.2</title>
+    <title>Image Analyzer</title>
     <link rel="stylesheet" href="style.css">
     <meta name="viewport" content="width=device-width,initial-scale=1">
   </head>
 
   <body>
-    <h1>Hello from my website</h1>   
-    <p>This is a real webpage. </p>
+    <div class="container">
+      <h1>Image Analyzer</h1>
+      <p class="subtitle">Upload a photo to detect objects</p>
 
-    <p>
-      <label for="picture">Take a picture using back facing camera:</label>
-      <input id="photo_input" type="file" accept="image/*" capture="environment">
-      <br>
-      <img id="thumbnail" width="200">
-    </p>
+      <div class="upload-area">
+        <label for="photo_input">Take a photo or choose an image:</label>
+        <input id="photo_input" type="file" accept="image/*" capture="environment">
+        <img id="thumbnail" width="200">
+      </div>
 
-    <p>
       <button id="upload_btn" disabled>Upload + Analyze</button>
-    </p>
 
-    <pre id="result"></pre>
+      <pre id="result"></pre>
 
-    <p>
-      Visit <a href="https://www.wikipedia.org">Wikipedia</a>
-    </p>
-    <img src="https://picsum.photos/id/237/500/500"/>
+      <img class="puppy" src="https://picsum.photos/id/237/300/300" alt="Cute puppy">
+
+      <div class="footer">
+        Powered by AI vision
+      </div>
+    </div>
 
     <script>
       let jpegBlob = null;
@@ -46,7 +44,6 @@
           });
           c.getContext("2d").drawImage(img, 0, 0);
 
-          // Convert whatever was selected (HEIC/PNG/etc.) into a JPEG blob.
           c.toBlob(b => {
             jpegBlob = b;
             thumbnail.src = URL.createObjectURL(b);
@@ -62,10 +59,9 @@
           return;
         }
 
-        result.textContent = "Uploading…";
+        result.textContent = "Analyzing...";
 
         const form = new FormData();
-        // Field name must be "file" to match your Flask handler.
         form.append("file", jpegBlob, "photo.jpg");
 
         try {
@@ -86,7 +82,5 @@
         }
       };
     </script>
-
   </body>
-
 </html>
